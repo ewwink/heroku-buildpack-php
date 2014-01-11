@@ -22,7 +22,7 @@ if [ -z "$NGINX_ZLIB_VERSION" ]; then
 fi
 
 if [ -z "$NGINX_PCRE_VERSION" ]; then
-    NGINX_PCRE_VERSION=8.32
+    NGINX_PCRE_VERSION=8.34
 fi
 
 zlib_version="$NGINX_ZLIB_VERSION"
@@ -51,23 +51,16 @@ echo "-----> Downloading NGINX ${nginx_version}"
 curl -LO "http://nginx.org/download/nginx-${nginx_version}.tar.gz"
 tar -xzvf "nginx-${nginx_version}.tar.gz"
 
-echo "-----> Uploading source to build server"
+echo "-----> Compiling Nginx"
 
-vulcan build --verbose \
-    --name nginx \
-    --prefix /app/vendor/nginx \
-    --source "$tempdir" \
-    --output "$tempdir/nginx-${nginx_version}.tgz" \
-    --command "cd nginx-${nginx_version} && ./configure --prefix=/app/vendor/nginx --add-module=../headers-more-nginx-module-0.25 --with-http_ssl_module --with-pcre=../pcre-${pcre_version} --with-zlib=../zlib-${zlib_version} && make && make install"
-
-echo "-----> Uploading package to s3://$S3_BUCKET/package/nginx-${nginx_version}.tgz"
-
-s3cmd put --verbose \
-    --acl-public \
-    "$tempdir/nginx-${nginx_version}.tgz" \
-    "s3://$S3_BUCKET/package/nginx-${nginx_version}.tgz"
+cd nginx-${nginx_version}
+./configure --prefix=/app/vendor/nginx --add-module=../headers-more-nginx-module-0.25 --with-http_ssl_module --with-pcre=../pcre-${pcre_version} --with-zlib=../zlib-${zlib_version}
+make
+make install
+cd /app/vendor/nginx
+tar -cvzf $tempdir/nginx-${nginx_version}.tgz .
 
 "$basedir/manifest" nginx
 "$basedir/package-checksum" "nginx-${nginx_version}"
 
-echo "-----> Done building NGINX package!"
+echo "-----> Done building NGINX package! saved in $tempdir"
