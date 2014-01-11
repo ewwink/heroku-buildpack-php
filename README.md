@@ -57,62 +57,6 @@ This buildpack sets environment variables during compile and runtime:
 This buildpack also detects when the app has a node `package.json` in the
 app's root. And will install node dependencies like less for example.
 
-## Frameworks
-
-### CakePHP
-
-Is used when the app requires the `pear-pear.cakephp.org/CakePHP` Pear package or when the
-`extra.heroku.framework` key is set to `cakephp2` in the `composer.json`.
-
-Options:
-
-* `index-document`: With CakePHP apps, this should be the file where `$Dispatcher->dispatch(new CakeRequest(), new CakeResponse());`
-  is called. All requests which don't match an existing file will be forwarded to
-  this document.
-
-### Symfony 2
-
-Is detected when the app requires the `symfony/symfony` package or when the 
-`framework` setting is set to `symfony2` in the `composer.json`.
-
-This framework preset doesn't need any configuration to work.
-
-It's recommended to enable the `user-env-compile` Heroku labs feature for better compatibility
-with Symfony's Composer hooks. But please note that if you use config vars in Composer hooks, or in `compile`
-scripts, then a new code push may be necessary if you decide to change a config variable.
-
-You can enable the labs feature for your app with:
-
-```
-$ heroku labs:enable user-env-compile
-```
-
-### Silex
-
-Is used when the app requires the `silex/silex` package or when the 
-`framework` setting is set to `silex` in the `composer.json`.
-
-Options:
-
-* `index-document`: With Silex apps, this should be the file where `$app->run()`
-  is called. All requests which don't match an existing file will be forwarded to
-  this document.
-
-### Slim
-
-Is used when the app requires the `slim/slim` package or when the
-`extra.heroku.framework` key is set to `slim` in the `composer.json`.
-
-Options:
-
-* `index-document`: With Slim apps, this should be the file where `$app->run()`
-  is called. All requests which don't match an existing file will be forwarded to
-  this document.
-
-### Magento
-
-Is used when the `extra.heroku.framework` key is set to `magento` in the `composer.json`.
-
 ### Classic PHP
 
 The classic PHP configuration is used as fallback when no framework was detected. It serves every `.php` file relative to the document root.
