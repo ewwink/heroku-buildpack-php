@@ -7,7 +7,7 @@ source "$basedir/../conf/buildpack.conf"
 
 package="$1"
 
-tempdir="$( mktemp -t s3_xxxx )"
+tempdir="$( mktemp -t s3_XXXXXXXXX )"
 rm -rf $tempdir
 mkdir -p $tempdir
 cd $tempdir
