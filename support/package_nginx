@@ -60,7 +60,6 @@ make install
 cd /app/vendor/nginx
 tar -cvzf $tempdir/nginx-${nginx_version}.tgz .
 
-"$basedir/manifest" nginx
 "$basedir/package-checksum" "nginx-${nginx_version}"
 
 echo "-----> Done building NGINX package! saved as $tempdir/nginx-${nginx_version}.tgz"
