@@ -38,6 +38,9 @@ echo "-----> Downloading dependency PCRE ${pcre_version}"
 curl -LO "http://sourceforge.net/projects/pcre/files/pcre/${pcre_version}/pcre-${pcre_version}.tar.gz"
 tar -xzvf "pcre-${pcre_version}.tar.gz"
 
+curl -LO https://github.com/agentzh/headers-more-nginx-module/archive/v0.25.tar.gz
+tar -zxvf v0.25.tar.gz
+ 
 echo "-----> Downloading dependency zlib ${zlib_version}"
 
 curl -LO "http://${S3_BUCKET}.s3.amazonaws.com/zlib/zlib-${zlib_version}.tar.gz"
@@ -55,7 +58,7 @@ vulcan build --verbose \
     --prefix /app/vendor/nginx \
     --source "$tempdir" \
     --output "$tempdir/nginx-${nginx_version}.tgz" \
-    --command "cd nginx-${nginx_version} && ./configure --prefix=/app/vendor/nginx --with-http_ssl_module --with-pcre=../pcre-${pcre_version} --with-zlib=../zlib-${zlib_version} && make && make install"
+    --command "cd nginx-${nginx_version} && ./configure --prefix=/app/vendor/nginx --add-module=../headers-more-nginx-module-0.25 --with-http_ssl_module --with-pcre=../pcre-${pcre_version} --with-zlib=../zlib-${zlib_version} && make && make install"
 
 echo "-----> Uploading package to s3://$S3_BUCKET/package/nginx-${nginx_version}.tgz"
 
