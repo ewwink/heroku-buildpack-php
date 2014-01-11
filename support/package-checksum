@@ -7,11 +7,7 @@ source "$basedir/../conf/buildpack.conf"
 
 package="$1"
 
-tempdir="$( mktemp -t s3_XXXXXXXXX )"
-rm -rf $tempdir
-mkdir -p $tempdir
-cd $tempdir
-
-echo "-----> Creating checksum for ${package}"
+echo "--> Creating checksum for ${package}"
 
 md5sum -b "${package}.tgz" > "${package}.md5"
+echo "----> File MD5 checksum ${package}.md5"
