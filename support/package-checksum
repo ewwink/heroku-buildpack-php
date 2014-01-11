@@ -14,4 +14,4 @@ cd $tempdir
 
 echo "-----> Creating checksum for ${package}"
 
-md5 -q "${package}.tgz" > "${package}.md5"
+md5sum -b "${package}.tgz" > "${package}.md5"
