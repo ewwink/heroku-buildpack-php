@@ -54,7 +54,7 @@ curl -LO "http://zlib.net/zlib-${zlib_version}.tar.gz"
 tar -xzvf "zlib-${zlib_version}.tar.gz"
 
 echo "-----> Downloading APACHE ${apache_version}
-curl -LO "http://mirror.symnds.com/software/Apache//httpd/httpd-${apache_version}.tar.gz"
+curl -LO "http://mirror.symnds.com/software/Apache/httpd/httpd-${apache_version}.tar.gz"
 tar -xzvf "httpd-${apache_version}.tar.gz"
 cd httpd-${apache_version}
 cd srclib
