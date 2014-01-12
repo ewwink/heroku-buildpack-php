@@ -64,11 +64,10 @@ cd ..
 
 echo "-----> Downloading OpenLiteSpeed ${openlitespeed_version}"
 curl -LO "http://open.litespeedtech.com/packages/openlitespeed-${openlitespeed_version}.tgz"
-tar -xzvf "openlitespeed-${openlitespeed_version}.tar.gz"
+tar -xzvf "openlitespeed-${openlitespeed_version}.tgz"
 cd openlitespeed-${openlitespeed_version}
 
 echo "-----> Compiling OpenLiteSpeed"
-cd ..
 ./configure --prefix=/app/vendor/openlitespeed \
 			--with-pcre=/app/vendor/pcre \
 			--with-expat=/app/vendor/expat \
