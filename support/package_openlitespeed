@@ -2,7 +2,7 @@
 
 set -e
 
-nginx_version="$1"
+openlitespeed_version="$1"
 
 E_ARG_MISSING=127
 E_S3_BUCKET_MISSING=2
@@ -12,58 +12,85 @@ source "$basedir/../conf/buildpack.conf"
 
 export PATH=${basedir}/../vendor/bin:$PATH
 
-if [ -z "$nginx_version" ]; then
+if [ -z "$openlitespeed_version" ]; then
     echo "Usage: $0 <version>" >&2
     exit $E_ARG_MISSING
 fi
 
-if [ -z "$NGINX_ZLIB_VERSION" ]; then
-    NGINX_ZLIB_VERSION=1.2.8
+if [ -z "$PCRE_VERSION" ]; then
+    APACHE_PCRE_VERSION=8.34
 fi
 
-if [ -z "$NGINX_PCRE_VERSION" ]; then
-    NGINX_PCRE_VERSION=8.34
+if [ -z "$APACHE_ZLIB_VERSION" ]; then
+    APACHE_ZLIB_VERSION=1.2.8
 fi
 
-zlib_version="$NGINX_ZLIB_VERSION"
-pcre_version="$NGINX_PCRE_VERSION"
+if [ -z "$EXPAT_VERSION" ]; then
+    APACHE_APR_VERSION=1.5.0
+fi
 
-tempdir="$( mktemp -t nginx_XXXXXXXX )"
+
+pcre_version="$PCRE_VERSION"
+zlib_version="$ZLIB_VERSION"
+apr_util_version="$EXPAT_VERSION"
+
+tempdir="$( mktemp -t openlitespeed_XXXXXXXX )"
 rm -rf $tempdir
 mkdir -p $tempdir
 cd $tempdir
+
+echo "-----> Downloading dependency zlib ${zlib_version}"
+
+curl -LO "http://zlib.net/zlib-${zlib_version}.tar.gz"
+tar -xzvf "zlib-${zlib_version}.tar.gz"
 
 echo "-----> Downloading dependency PCRE ${pcre_version}"
 
 curl -LO "http://sourceforge.net/projects/pcre/files/pcre/${pcre_version}/pcre-${pcre_version}.tar.gz"
 tar -xzvf "pcre-${pcre_version}.tar.gz"
-
-curl -LO https://github.com/agentzh/headers-more-nginx-module/archive/v0.25.tar.gz
-tar -zxvf v0.25.tar.gz
- 
-echo "-----> Downloading dependency zlib ${zlib_version}"
-
-#curl -LO "http://${S3_BUCKET}.s3.amazonaws.com/zlib/zlib-${zlib_version}.tar.gz"
-curl -LO "http://zlib.net/zlib-${zlib_version}.tar.gz"
-tar -xzvf "zlib-${zlib_version}.tar.gz"
-
-echo "-----> Downloading NGINX ${nginx_version}"
-
-curl -LO "http://nginx.org/download/nginx-${nginx_version}.tar.gz"
-tar -xzvf "nginx-${nginx_version}.tar.gz"
-
-echo "-----> Compiling Nginx"
-
-cd nginx-${nginx_version}
-./configure --prefix=/app/vendor/nginx --add-module=../headers-more-nginx-module-0.25 --with-http_ssl_module --with-pcre=../pcre-${pcre_version} --with-zlib=../zlib-${zlib_version}
+cd pcre-${pcre_version}
+./configure --prefix=/app/vendor/pcre
 make
 make install
-cd /app/vendor/nginx
-tar -cvzf $tempdir/nginx-${nginx_version}.tgz .
+cd ..
 
-"$basedir/package-checksum" "$tempdir/nginx-${nginx_version}.tgz"
+echo "-----> Downloading APACHE ${openlitespeed_version}"
+curl -LO "http://mirror.symnds.com/software/Apache/httpd/httpd-${openlitespeed_version}.tar.gz"
+tar -xzvf "httpd-${openlitespeed_version}.tar.gz"
+cd httpd-${openlitespeed_version}
 
-echo "-----> Done building NGINX package! saved as $tempdir/nginx-${nginx_version}.tgz"
+cd srclib
+
+echo "-----> Downloading dependency APR Utility ${apr_version}"
+curl -LO "http://mirror.symnds.com/software/Apache/apr/apr-${apr_version}.tar.gz"
+tar -xzvf "apr-${apr_version}.tar.gz"
+mv apr-${apr_version} apr
+
+curl -LO "http://mirror.symnds.com/software/Apache/apr/apr-util-${apr_util_version}.tar.gz"
+tar -xzvf "apr-util-${apr_util_version}.tar.gz"
+mv apr-util-${apr_util_version} apr-util
+
+echo "-----> Compiling Apache"
+cd ..
+./configure --prefix=/app/vendor/openlitespeed \
+			--enable-so \
+			--enable-rewrite \
+			--enable-mods-shared=all \
+			--with-included-apr \
+			--enable-expires \
+            --enable-headers \
+			--enable-deflate \
+			--with-included-apr \
+			--with-zlib=../zlib-${zlib_version} \
+			--with-pcre=/app/vendor/pcre
+make
+make install
+cd /app/vendor/openlitespeed
+tar -cvzf $tempdir/openlitespeed-${openlitespeed_version}.tgz .
+
+"$basedir/package-checksum" "$tempdir/openlitespeed-${openlitespeed_version}.tgz"
+
+echo "-----> Done building APACHE package! saved as $tempdir/openlitespeed-${openlitespeed_version}.tgz"
 
 echo "-----------------------------------------------"
 
@@ -71,12 +98,8 @@ echo "---> Uploading package to FTP Server"
 while true; do
     read -p "Do you wish to to Upload to FTP Server (y/n)?" yn
     case ${yn} in
-        [Yy]* ) "$basedir/ftp-upload" "$tempdir/nginx-${nginx_version}.tgz"; break;;
+        [Yy]* ) "$basedir/ftp-upload" "$tempdir/openlitespeed-${openlitespeed_version}.tgz"; break;;
         [Nn]* ) exit;;
         * ) echo "Please answer yes or no.";;
     esac
 done
- 
-# Upload to FTP
-# Tes login: FTPTEST="$(curl ftp://lyric.net23.net --user ewwink:eewjeow)"
-# Upload: curl -v -T README.md ftp://mydomain.net/public_html/nginx-php-apc/ --user user:pass
