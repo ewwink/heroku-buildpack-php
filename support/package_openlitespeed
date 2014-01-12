@@ -21,8 +21,8 @@ if [ -z "$PCRE_VERSION" ]; then
     PCRE_VERSION=8.34
 fi
 
-if [ -z "$APACHE_ZLIB_VERSION" ]; then
-    APACHE_ZLIB_VERSION=1.2.8
+if [ -z "$ZLIB_VERSION" ]; then
+    ZLIB_VERSION=1.2.8
 fi
 
 if [ -z "$EXPAT_VERSION" ]; then
