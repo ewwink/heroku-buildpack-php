@@ -65,6 +65,7 @@ cd ..
 echo "-----> Downloading OpenLiteSpeed ${openlitespeed_version}"
 curl -LO "http://open.litespeedtech.com/packages/openlitespeed-${openlitespeed_version}.tgz"
 tar -xzvf "openlitespeed-${openlitespeed_version}.tgz"
+mv openlitespeed-${openlitespeed_version}.tgz openlitespeed-${openlitespeed_version}-src.tgz
 cd openlitespeed-${openlitespeed_version}
 
 echo "-----> Compiling OpenLiteSpeed"
@@ -81,7 +82,7 @@ tar -cvzf $tempdir/openlitespeed-${openlitespeed_version}.tgz .
 
 "$basedir/package-checksum" "$tempdir/openlitespeed-${openlitespeed_version}.tgz"
 
-echo "-----> Done building APACHE package! saved as $tempdir/openlitespeed-${openlitespeed_version}.tgz"
+echo "-----> Done building OpenLiteSpeed package! saved as $tempdir/openlitespeed-${openlitespeed_version}.tgz"
 
 echo "-----------------------------------------------"
 
