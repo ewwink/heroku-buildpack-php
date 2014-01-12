@@ -63,3 +63,19 @@ tar -cvzf $tempdir/nginx-${nginx_version}.tgz .
 "$basedir/package-checksum" "$tempdir/nginx-${nginx_version}.tgz"
 
 echo "-----> Done building NGINX package! saved as $tempdir/nginx-${nginx_version}.tgz"
+
+echo "-----------------------------------------------"
+
+echo "-----> Uploading package to FTP Server"
+while true; do
+    read -p "Do you wish to to Upload to FTP Server (y/n)?" yn
+    case ${yn} in
+        [Yy]* ) "$basedir/ftp-upload" "$tempdir/nginx-${nginx_version}.tgz"; break;;
+        [Nn]* ) exit;;
+        * ) echo "Please answer yes or no.";;
+    esac
+done
+ 
+# Upload to FTP
+# Tes login: FTPTEST="$(curl ftp://lyric.net23.net --user ewwink:eewjeow)"
+# Upload: curl -v -T README.md ftp://mydomain.net/public_html/nginx-php-apc/ --user user:pass
