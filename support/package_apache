@@ -30,7 +30,7 @@ if [ -z "$APACHE_APR_VERSION" ]; then
 fi
 
 if [ -z "$APACHE_APR_UTIL_VERSION" ]; then
-    APACHE_UTIL_APR_VERSION=1.5.3
+    APACHE_APR_UTIL_VERSION=1.5.3
 fi
 
 pcre_version="$APACHE_PCRE_VERSION"
