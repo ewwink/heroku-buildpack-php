@@ -14,6 +14,8 @@ else
 	echo "FTP User or Password is empty, exit..."
 fi
 
-echo "-----> File Uploaded to FTP Server"
+echo "-----> File Uploading complete to re-run ftp-upload run command below"
+echo "support/ftp-upload ${package}"
+echo ""
 # Tes login: FTPTEST="$(curl ftp://lyric.net23.net --user ewwink:eewjeow)"
 #curl -v -T README.md ftp://${FTP_HOST}${FTP_DIR} --user ${FTP_USER}:${FTP_PASS}
