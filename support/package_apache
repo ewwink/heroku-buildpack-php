@@ -48,17 +48,20 @@ echo "-----> Downloading dependency zlib ${zlib_version}"
 curl -LO "http://zlib.net/zlib-${zlib_version}.tar.gz"
 tar -xzvf "zlib-${zlib_version}.tar.gz"
 
-echo "-----> Downloading APACHE ${apache_version}"
-curl -LO "http://mirror.symnds.com/software/Apache/httpd/httpd-${apache_version}.tar.gz"
-tar -xzvf "httpd-${apache_version}.tar.gz"
-cd httpd-${apache_version}
-cd srclib
-
 echo "-----> Downloading dependency PCRE ${pcre_version}"
 
 curl -LO "http://sourceforge.net/projects/pcre/files/pcre/${pcre_version}/pcre-${pcre_version}.tar.gz"
 tar -xzvf "pcre-${pcre_version}.tar.gz"
-mv pcre-${pcre_version} pcre
+cd pcre-${pcre_version}
+./configure --prefix=/app/vendor/pcre
+cd ..
+
+echo "-----> Downloading APACHE ${apache_version}"
+curl -LO "http://mirror.symnds.com/software/Apache/httpd/httpd-${apache_version}.tar.gz"
+tar -xzvf "httpd-${apache_version}.tar.gz"
+cd httpd-${apache_version}
+
+cd srclib
 
 echo "-----> Downloading dependency APR Utility ${apr_version}"
 curl -LO "http://mirror.symnds.com/software/Apache/apr/apr-${apr_version}.tar.gz"
@@ -75,13 +78,13 @@ cd ..
 			--enable-so \
 			--enable-rewrite \
 			--enable-mods-shared=all \
-			--with-zlib=../zlib-${zlib_version} \
 			--with-included-apr \
 			--enable-expires \
             --enable-headers \
 			--enable-deflate \
 			--with-included-apr \
-			-–with-pcre
+			--with-zlib=../zlib-${zlib_version} \
+			--with-pcre=/app/vendor/pcre
 make
 make install
 cd /app/vendor/apache
