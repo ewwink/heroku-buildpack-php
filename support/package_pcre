@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+
+set -e
+
+pcre_version="$1"
+
+E_ARG_MISSING=127
+E_S3_BUCKET_MISSING=2
+
+basedir="$( cd -P "$( dirname "$0" )" && pwd )"
+source "$basedir/../conf/buildpack.conf"
+
+export PATH=${basedir}/../vendor/bin:$PATH
+
+if [ -z "$pcre_version" ]; then
+    APACHE_PCRE_VERSION=8.34
+fi
+
+
+pcre_version="$APACHE_PCRE_VERSION"
+
+tempdir="$( mktemp -t pcre_XXXXXXXX )"
+rm -rf $tempdir
+mkdir -p $tempdir
+cd $tempdir
+
+
+echo "-----> Downloading dependency PCRE ${pcre_version}"
+
+curl -LO "http://sourceforge.net/projects/pcre/files/pcre/${pcre_version}/pcre-${pcre_version}.tar.gz"
+tar -xzvf "pcre-${pcre_version}.tar.gz"
+cd pcre-${pcre_version}
+./configure --prefix=/app/vendor/pcre
+make
+make install
+
+cd /app/vendor/pcre
+tar -cvzf $tempdir/apache-${apache_version}.tgz .
+
+"$basedir/package-checksum" "$tempdir/httpd-${apache_version}.tgz"
+
+echo "-----> Done building APACHE package! saved as $tempdir/apache-${apache_version}.tgz"
+
+echo "-----------------------------------------------"
+
+echo "---> Uploading package to FTP Server"
+while true; do
+    read -p "Do you wish to to Upload to FTP Server (y/n)?" yn
+    case ${yn} in
+        [Yy]* ) "$basedir/ftp-upload" "$tempdir/httpd-${apache_version}.tgz"; break;;
+        [Nn]* ) exit;;
+        * ) echo "Please answer yes or no.";;
+    esac
+done
