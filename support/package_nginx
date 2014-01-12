@@ -76,7 +76,4 @@ while true; do
         * ) echo "Please answer yes or no.";;
     esac
 done
- 
-# Upload to FTP
-# Tes login: FTPTEST="$(curl ftp://lyric.net23.net --user ewwink:eewjeow)"
-# Upload: curl -v -T README.md ftp://mydomain.net/public_html/nginx-php-apc/ --user user:pass
+
