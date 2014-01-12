@@ -13,11 +13,11 @@ source "$basedir/../conf/buildpack.conf"
 export PATH=${basedir}/../vendor/bin:$PATH
 
 if [ -z "$pcre_version" ]; then
-    APACHE_PCRE_VERSION=8.34
+    PCRE_VERSION=8.34
 fi
 
 
-pcre_version="$APACHE_PCRE_VERSION"
+pcre_version="$PCRE_VERSION"
 
 tempdir="$( mktemp -t pcre_XXXXXXXX )"
 rm -rf $tempdir
@@ -35,11 +35,11 @@ make
 make install
 
 cd /app/vendor/pcre
-tar -cvzf $tempdir/apache-${apache_version}.tgz .
+tar -cvzf $tempdir/pcre-${pcre_version}.tgz .
 
-"$basedir/package-checksum" "$tempdir/httpd-${apache_version}.tgz"
+"$basedir/package-checksum" "$tempdir/pcre-${pcre_version}.tgz"
 
-echo "-----> Done building APACHE package! saved as $tempdir/apache-${apache_version}.tgz"
+echo "-----> Done building PCRE package! saved as $tempdir/pcre-${pcre_version}.tgz"
 
 echo "-----------------------------------------------"
 
@@ -47,7 +47,7 @@ echo "---> Uploading package to FTP Server"
 while true; do
     read -p "Do you wish to to Upload to FTP Server (y/n)?" yn
     case ${yn} in
-        [Yy]* ) "$basedir/ftp-upload" "$tempdir/httpd-${apache_version}.tgz"; break;;
+        [Yy]* ) "$basedir/ftp-upload" "$tempdir/pcre-${pcre_version}.tgz"; break;;
         [Nn]* ) exit;;
         * ) echo "Please answer yes or no.";;
     esac
