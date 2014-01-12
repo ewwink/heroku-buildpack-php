@@ -54,6 +54,8 @@ curl -LO "http://sourceforge.net/projects/pcre/files/pcre/${pcre_version}/pcre-$
 tar -xzvf "pcre-${pcre_version}.tar.gz"
 cd pcre-${pcre_version}
 ./configure --prefix=/app/vendor/pcre
+make
+make install
 cd ..
 
 echo "-----> Downloading APACHE ${apache_version}"
