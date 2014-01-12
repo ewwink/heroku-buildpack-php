@@ -81,7 +81,7 @@ cd ..
             --enable-headers \
 			--enable-deflate \
 			--with-included-apr \
-			-–with-included-pcre
+			-–with-pcre
 make
 make install
 cd /app/vendor/apache
