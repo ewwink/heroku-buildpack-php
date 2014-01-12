@@ -92,7 +92,7 @@ make install
 cd /app/vendor/apache
 tar -cvzf $tempdir/apache-${apache_version}.tgz .
 
-"$basedir/package-checksum" "$tempdir/httpd-${apache_version}.tgz"
+"$basedir/package-checksum" "$tempdir/apache-${apache_version}.tgz"
 
 echo "-----> Done building APACHE package! saved as $tempdir/apache-${apache_version}.tgz"
 
@@ -102,7 +102,7 @@ echo "---> Uploading package to FTP Server"
 while true; do
     read -p "Do you wish to to Upload to FTP Server (y/n)?" yn
     case ${yn} in
-        [Yy]* ) "$basedir/ftp-upload" "$tempdir/httpd-${apache_version}.tgz"; break;;
+        [Yy]* ) "$basedir/ftp-upload" "$tempdir/apache-${apache_version}.tgz"; break;;
         [Nn]* ) exit;;
         * ) echo "Please answer yes or no.";;
     esac
