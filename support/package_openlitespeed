@@ -56,7 +56,7 @@ cd ..
 echo "-----> Downloading dependency Expat XML Parser ${expat_version}"
 curl -LO "http://sourceforge.net/projects/expat/files/expat/${expat_version}/expat-${expat_version}.tar.gz"
 tar -xzvf "expat-${expat_version}.tar.gz"
-cd expat-${pcre_version}
+cd expat-${expat_version}
 ./configure --prefix=/app/vendor/expat
 make
 make install
