@@ -43,7 +43,8 @@ tar -zxvf v0.25.tar.gz
  
 echo "-----> Downloading dependency zlib ${zlib_version}"
 
-curl -LO "http://${S3_BUCKET}.s3.amazonaws.com/zlib/zlib-${zlib_version}.tar.gz"
+#curl -LO "http://${S3_BUCKET}.s3.amazonaws.com/zlib/zlib-${zlib_version}.tar.gz"
+curl -LO "http://zlib.net/zlib-${zlib_version}.tar.gz"
 tar -xzvf "zlib-${zlib_version}.tar.gz"
 
 echo "-----> Downloading NGINX ${nginx_version}"
@@ -66,7 +67,7 @@ echo "-----> Done building NGINX package! saved as $tempdir/nginx-${nginx_versio
 
 echo "-----------------------------------------------"
 
-echo "-----> Uploading package to FTP Server"
+echo "---> Uploading package to FTP Server"
 while true; do
     read -p "Do you wish to to Upload to FTP Server (y/n)?" yn
     case ${yn} in
